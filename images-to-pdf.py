@@ -7,7 +7,6 @@ import random
 import shutil
 import argparse
 
-import fitz
 from PIL import Image
 from tqdm import tqdm
 from fpdf import FPDF
@@ -34,9 +33,7 @@ def convert_images_to_pdf(
         if ext_ in IMG_EXT_LIST:
             f_abs_path = os.path.join(images_path, img_file)
             f_new_abs_path = f_abs_path
-            if ext_ == ".png":
-                f_new_abs_path = f_abs_path.replace(".png", ".jpg")
-                os.system("mv %s %s" % (f_abs_path, f_new_abs_path))
+            f_new_abs_path = str(f_new_abs_path) 
             tmp_img = Image.open(f_new_abs_path)
             max_w = tmp_img.size[0] if tmp_img.size[0] > max_w else max_w
             max_h = tmp_img.size[1] if tmp_img.size[1] > max_h else max_h
@@ -49,9 +46,19 @@ def convert_images_to_pdf(
         if ext_ in IMG_EXT_LIST:
             f_abs_path = os.path.join(images_path, img_file)
             f_new_abs_path = f_abs_path
-            if ext_ == ".png":
-                f_new_abs_path = f_abs_path.replace(".png", ".jpg")
-                os.system("mv %s %s" % (f_abs_path, f_new_abs_path))
+
+            # if ext_ == ".jpg":
+            #     f_new_abs_path = f_abs_path.replace(".jpg", ".png")
+            #     print("CMD: {}".format("mv '%s' '%s'" % (f_abs_path, f_new_abs_path)))
+            #     os.system("mv '%s' '%s'" % (f_abs_path, f_new_abs_path))
+            #     continue
+
+            # if ext_ == ".png":
+            #     f_new_abs_path = f_abs_path.replace(".png", ".jpg")
+            #     print("CMD: {}".format("mv '%s' '%s'" % (f_abs_path, f_new_abs_path)))
+            #     os.system("mv '%s' '%s'" % (f_abs_path, f_new_abs_path))
+
+            f_new_abs_path = str(f_new_abs_path) 
 
             tmp_img = Image.open(f_new_abs_path)
             tmp_img_w, tmp_img_h = tmp_img.size
