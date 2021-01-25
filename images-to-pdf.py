@@ -28,6 +28,8 @@ def convert_images_to_pdf(
 
     max_w, max_h = 0, 0
     for img_file in os.listdir(images_path):
+        if img_file.startswith('._'):
+            continue        
         tmp_s_ = os.path.splitext(img_file.lower())
         ext_ = tmp_s_[-1]
         if ext_ in IMG_EXT_LIST:
@@ -41,6 +43,8 @@ def convert_images_to_pdf(
     pdf = FPDF(unit="pt", format=[max_w, max_h])
 
     for img_file in os.listdir(images_path):
+        if img_file.startswith('._'):
+            continue
         tmp_s_ = os.path.splitext(img_file.lower())
         ext_ = tmp_s_[-1]
         if ext_ in IMG_EXT_LIST:
@@ -62,9 +66,13 @@ def convert_images_to_pdf(
 
             tmp_img = Image.open(f_new_abs_path)
             tmp_img_w, tmp_img_h = tmp_img.size
-            pdf.add_page()
-            pdf.image(f_new_abs_path, int((max_w - tmp_img_w) / 2),
-                      int((max_h - tmp_img_h) / 2))
+            if tmp_img_h > tmp_img_w:
+                pdf.add_page(orientation="Portrait")
+            else:
+                pdf.add_page(orientation="Landscape")
+            # pdf.image(f_new_abs_path, int((max_w - tmp_img_w) / 2),
+            #           int((max_h - tmp_img_h) / 2))
+            pdf.image(f_new_abs_path, 0, 0, tmp_img_w, tmp_img_h)
 
     print(pdf_path)
 
@@ -81,5 +89,16 @@ if "__main__" == __name__:
                         type=str, required=False, default=None)
 
     args = parser.parse_args()
-    convert_images_to_pdf(
-        args.images_path, args.pdf_path, args.tmp_image_path)
+    # convert_images_to_pdf(
+    #     args.images_path, args.pdf_path, args.tmp_image_path)
+    import numpy as np
+    from PIL import Image
+    img = Image.open('/Users/karllok/Downloads/Girls/007S8ZIlgy1gjsq0kix4zj30zk0ju7wh.jpg')
+    lr_img = np.array(img)
+    from ISR.models import RDN
+
+    rdn = RDN(weights='psnr-small')
+    sr_img = rdn.predict(lr_img)
+    print(Image.fromarray(sr_img))
+    
+
